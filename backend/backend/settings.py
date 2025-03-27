@@ -46,7 +46,9 @@ STATIC_URL = '/static/'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "https://my-note-project-3h8y0dln3-amazinghenrys-projects.vercel.app",
+    "https://my-note-project.vercel.app",
+    "https://my-note-project-oyccj8esn-amazinghenrys-projects.vercel.app",  # current preview
+    "https://my-note-project-3h8y0dln3-amazinghenrys-projects.vercel.app",  # previous
 ]
 
 ROOT_URLCONF = 'backend.urls'
