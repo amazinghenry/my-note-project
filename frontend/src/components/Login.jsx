@@ -1,7 +1,6 @@
-// src/components/Login.jsx
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axiosInstance";
 
 function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -17,10 +16,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/token/",
-        form
-      );
+      const response = await api.post("token/", form);
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
       localStorage.setItem("username", form.username);

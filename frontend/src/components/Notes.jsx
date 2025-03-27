@@ -1,6 +1,6 @@
 // src/components/Notes.jsx
 import { useEffect, useState } from "react";
-import axios from "../api/axiosInstance";
+import api from "../api/axiosInstance"; // ✅ clear naming
 import { useNavigate } from "react-router-dom";
 
 function Notes() {
@@ -17,7 +17,7 @@ function Notes() {
   };
 
   const fetchNotes = () => {
-    axios
+    api
       .get("notes/")
       .then((res) => setNotes(res.data))
       .catch((err) => console.error(err));
@@ -30,8 +30,8 @@ function Notes() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const request = isEditing
-      ? axios.put(`notes/${editNoteId}/`, formData)
-      : axios.post("notes/", formData);
+      ? api.put(`notes/${editNoteId}/`, formData)
+      : api.post("notes/", formData);
 
     request
       .then(() => {
@@ -50,7 +50,7 @@ function Notes() {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`notes/${id}/`).then(fetchNotes);
+    api.delete(`notes/${id}/`).then(fetchNotes);
   };
 
   return (

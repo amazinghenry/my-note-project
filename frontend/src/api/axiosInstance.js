@@ -1,9 +1,11 @@
+// src/api/axiosInstance.js
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/',
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
+// Attach access token to requests
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('access_token');
   if (token) {
@@ -12,6 +14,7 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+// Handle token refresh on 401
 api.interceptors.response.use(
   res => res,
   async err => {
@@ -20,9 +23,15 @@ api.interceptors.response.use(
       original._retry = true;
       try {
         const refresh = localStorage.getItem('refresh_token');
-        const res = await axios.post('http://127.0.0.1:8000/api/token/refresh/', { refresh });
-        localStorage.setItem('access_token', res.data.access);
-        original.headers.Authorization = `Bearer ${res.data.access}`;
+
+        // ✅ Use VITE_API_URL for token refresh too
+        const refreshResponse = await axios.post(
+          `${import.meta.env.VITE_API_URL}token/refresh/`,
+          { refresh }
+        );
+
+        localStorage.setItem('access_token', refreshResponse.data.access);
+        original.headers.Authorization = `Bearer ${refreshResponse.data.access}`;
         return api(original);
       } catch (refreshErr) {
         localStorage.clear();

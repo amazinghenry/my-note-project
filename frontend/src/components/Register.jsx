@@ -1,7 +1,7 @@
 // src/components/Register.jsx
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axiosInstance";
 
 function Register() {
   const [form, setForm] = useState({
@@ -25,7 +25,7 @@ function Register() {
     }
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/register/", {
+      await api.post("register/", {
         username: form.username,
         password: form.password,
       });
