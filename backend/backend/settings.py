@@ -54,9 +54,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 # Allow frontend dev server to access backend
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:5173", "https://my-note-project.vercel.app"
-      # Vite dev server
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # local dev
+    "https://my-note-project-3h8y0dln3-amazinghenrys-projects.vercel.app",  # real deployed frontend
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -78,22 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'projectnotedb',
-#         'USER': 'dbadmin',
-#         'PASSWORD': 'password2023',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
 
 DATABASES = {
     'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
