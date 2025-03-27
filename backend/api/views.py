@@ -1,22 +1,20 @@
-from rest_framework import viewsets, permissions, status
-from .models import Note
-from .serializers import NoteSerializer
+from rest_framework import viewsets, permissions
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from .models import Note
+from .serializers import NoteSerializer
 
 class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = NoteSerializer
-    permission_classes = [permissions.IsAuthenticated]  # 👈 Require auth
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Note.objects.filter(user=self.request.user).order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-    def get_queryset(self):
-        return Note.objects.filter(user=self.request.user)
 
     def get_object(self):
         obj = super().get_object()
