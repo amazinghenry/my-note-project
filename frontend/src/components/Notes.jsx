@@ -132,7 +132,11 @@ function Notes() {
             <li key={note.id}>
               {note.image && (
                 <img
-                  src={note.image}
+                  src={
+                    note.image?.startsWith("http")
+                      ? note.image
+                      : `${import.meta.env.VITE_MEDIA_URL || ""}${note.image}`
+                  }
                   alt="Uploaded"
                   style={{ maxWidth: "100px", marginTop: "0.5rem" }}
                 />
