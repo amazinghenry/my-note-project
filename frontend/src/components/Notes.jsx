@@ -5,7 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 function Notes() {
   const [notes, setNotes] = useState([]);
-  const [formData, setFormData] = useState({ title: "", content: "" });
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    image: null,
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [editNoteId, setEditNoteId] = useState(null);
   const username = localStorage.getItem("username");
@@ -27,24 +31,40 @@ function Notes() {
     fetchNotes();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const request = isEditing
-      ? api.put(`notes/${editNoteId}/`, formData)
-      : api.post("notes/", formData);
 
-    request
-      .then(() => {
-        setFormData({ title: "", content: "" });
-        setIsEditing(false);
-        setEditNoteId(null);
-        fetchNotes();
-      })
-      .catch((err) => console.error(err));
+    const form = new FormData();
+    form.append("title", formData.title);
+    form.append("content", formData.content);
+    if (formData.image) {
+      form.append("image", formData.image);
+    }
+
+    try {
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
+      };
+
+      const response = isEditing
+        ? await api.put(`notes/${editNoteId}/`, form, config)
+        : await api.post("notes/", form, config);
+
+      setFormData({ title: "", content: "", image: null });
+      setIsEditing(false);
+      setEditNoteId(null);
+      fetchNotes();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleEdit = (note) => {
-    setFormData({ title: note.title, content: note.content });
+    setFormData({
+      title: note.title,
+      content: note.content,
+      image: null,
+    });
     setIsEditing(true);
     setEditNoteId(note.id);
   };
@@ -80,6 +100,14 @@ function Notes() {
           rows="4"
         />
         <br />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            setFormData({ ...formData, image: e.target.files[0] })
+          }
+        />
+        <br />
         <button type="submit">{isEditing ? "Update" : "Add"} Note</button>
         {isEditing && (
           <button
@@ -87,7 +115,7 @@ function Notes() {
             onClick={() => {
               setIsEditing(false);
               setEditNoteId(null);
-              setFormData({ title: "", content: "" });
+              setFormData({ title: "", content: "", image: null });
             }}
           >
             Cancel
@@ -102,6 +130,13 @@ function Notes() {
         <ul>
           {notes.map((note) => (
             <li key={note.id}>
+              {note.image && (
+                <img
+                  src={note.image}
+                  alt="Uploaded"
+                  style={{ maxWidth: "100px", marginTop: "0.5rem" }}
+                />
+              )}
               <h3>{note.title}</h3>
               <p>{note.content}</p>
               <button onClick={() => handleEdit(note)}>Edit</button>
