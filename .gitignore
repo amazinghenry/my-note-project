@@ -22,8 +22,9 @@ backend/.env
 backend/.vscode/
 
 # Django migrations
-**/migrations/
-!backend/api/migrations/__init__.py
+# Ignore compiled migration files only, but keep .py scripts
+**/migrations/*.pyc
+**/migrations/__pycache__/
 
 # === FRONTEND (Vite + React) ===
 frontend/node_modules/
